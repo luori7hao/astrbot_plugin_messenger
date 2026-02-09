@@ -1,0 +1,82 @@
+{
+  "enable_llm_recognition": {
+    "description": "启用LLM智能识别",
+    "type": "bool",
+    "hint": "当消息格式不完全匹配时，使用LLM智能识别用户意图",
+    "default": true
+  },
+  "inbox_settings": {
+    "description": "收件箱设置",
+    "type": "object",
+    "hint": "自定义接收回复消息的位置，避免私聊被打断",
+    "items": {
+      "enable_inbox": {
+        "description": "启用收件箱功能",
+        "type": "bool",
+        "hint": "启用后，发给使用者的消息将转移到收件箱",
+        "default": false
+      },
+      "owner_qq": {
+        "description": "使用者QQ号",
+        "type": "string",
+        "hint": "绑定使用者的QQ号，发给此QQ的消息会转移到收件箱",
+        "default": ""
+      },
+      "inbox_type": {
+        "description": "收件箱类型",
+        "type": "string",
+        "hint": "group(群聊，推荐) 或 private(私聊)",
+        "default": "group"
+      },
+      "inbox_id": {
+        "description": "收件箱ID",
+        "type": "string",
+        "hint": "群号（推荐只有你和bot的群）或QQ号",
+        "default": ""
+      }
+    }
+  },
+  "message_prefix": {
+    "description": "传话消息前缀",
+    "type": "string",
+    "hint": "发送传话消息时的前缀符号",
+    "default": "📨"
+  },
+  "success_prefix": {
+    "description": "成功提示前缀",
+    "type": "string",
+    "hint": "操作成功时的提示前缀",
+    "default": "✅"
+  },
+  "error_prefix": {
+    "description": "错误提示前缀",
+    "type": "string",
+    "hint": "操作失败时的提示前缀",
+    "default": "❌"
+  },
+  "admin_qq_list": {
+    "description": "管理员QQ号列表",
+    "type": "string",
+    "hint": "可以使用群发功能的QQ号，用逗号分隔（如：123456,789012）。留空则所有人都可使用群发",
+    "default": ""
+  },
+  "broadcast_settings": {
+    "description": "群发设置",
+    "type": "object",
+    "hint": "一键群发功能配置，仅管理员可用",
+    "items": {
+      "blacklist": {
+        "description": "黑名单",
+        "type": "string",
+        "hint": "不发送群发消息的QQ号列表，用逗号分隔（如：123456,789012）",
+        "default": ""
+      },
+      "delay_seconds": {
+        "description": "发送间隔",
+        "type": "int",
+        "hint": "每条消息之间的发送间隔（秒），避免发送过快",
+        "default": 1
+      }
+    }
+  }
+}
