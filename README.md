@@ -10,6 +10,7 @@
 - 🤖 **智能识别**：支持 LLM 智能识别，即使消息格式不完全匹配也能理解意图
 - ⚙️ **可配置**：支持自定义消息前缀和提示符号
 - 📡 **一键群发**：管理员可向所有好友和群聊发送消息（支持图片和回复！）
+- 💬 **问话增强**：`问话/搭话/主动聊天` 已接入 `context_aware` 上下文感知与 `llmperception` 时间/节假日分析（含降级兜底）
 
 ## 命令一览
 
@@ -19,6 +20,7 @@
 | `传话 @某人 消息` | 帮你传话给好友 | 所有人 |
 | `转发 @某人 消息` | 同上（别名） | 所有人 |
 | `转告 @某人 消息` | 同上（别名） | 所有人 |
+| `问话 QQ号/群号 主题(选填)` | 主动向目标发起聊天（可带主题） | 管理员 |
 | `通告群聊 群号 消息` | 向指定群发送通告 | 管理员 |
 | `群发 消息` | 向所有好友和群发送消息 | 管理员 |
 | 引用传话消息 + 回复内容 | 回复传话/通告/群发 | 所有人 |
@@ -52,7 +54,27 @@
 [引用消息] 好的，我知道了
 ```
 
-### 3. 通告群聊（管理员功能）
+### 3. 问话（管理员功能）
+
+主动向好友或群发起一条由 LLM 生成的自然聊天消息：
+
+```
+问话 QQ号/群号 主题（选填）
+```
+
+例如：
+- `问话 123456 今晚吃什么`
+- `搭话 987654321`
+- `主动聊天 123456789 最近在忙啥`
+
+问话增强行为：
+- 优先从 `context_aware` 插件读取格式化上下文（若可用）
+- 优先从 `llmperception` 插件读取时间/节假日/农历/平台感知信息（若可用）
+- 可选指定“问话人格ID”，让搭话按指定人格生成
+- 若未指定人格ID，则默认沿用当前会话人格与自定义规则（包含高优先级规则）
+- 任一插件不可用时自动降级，不影响问话主流程
+
+### 4. 通告群聊（管理员功能）
 
 向指定群发送通告：
 
@@ -65,7 +87,7 @@
 - 群内成员**引用**该消息进行回复时，Bot 会将回复内容**私聊转发给你**
 - 你可以继续引用回复，形成跨群对话
 
-### 4. 一键群发（管理员功能）
+### 5. 一键群发（管理员功能）
 
 向所有好友和群聊发送消息：
 
@@ -116,6 +138,16 @@
 | broadcast_settings.blacklist | 黑名单列表（QQ号和群号），用逗号分隔 | "" |
 | broadcast_settings.delay_seconds | 每条消息发送间隔（秒） | 1 |
 
+### 问话增强设置（context_aware / llmperception）
+
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| initiate_chat_enhancement.enable_context_aware | 问话时启用 context_aware 上下文 | true |
+| initiate_chat_enhancement.context_history_count | 读取 context_aware 历史条数 | 10 |
+| initiate_chat_enhancement.enable_time_perception | 问话时启用时间/节假日感知 | true |
+| initiate_chat_enhancement.perception_timezone | 感知降级时区（插件不可用时） | Asia/Shanghai |
+| initiate_chat_enhancement.persona_id | 问话人格ID（可选，留空则用当前会话人格与规则） | "" |
+
 ## 示例流程
 
 **传话流程**：
@@ -156,6 +188,23 @@ Bot: 📨 C 让我回复你：我报名！
 2. 在 AstrBot 管理面板中上传并安装插件
 3. 或者解压到 `data/plugins/astrbot_plugin_messenger` 目录
 4. 重启 AstrBot
+
+## 更新日志
+
+### v2.1.0 (2026-02-19)
+**问话/搭话功能重大增强：**
+- ✨ 接入 `context_aware` 插件：问话时自动获取目标会话的历史上下文，让 LLM 生成更贴合对话场景的消息
+- ✨ 接入 `llmperception` 插件：问话时自动感知当前时间、节假日、农历、节气等信息，让消息更应景
+- 🎭 人格继承优化：未配置 `persona_id` 时，优先使用**目标会话**绑定的人格，回退到当前会话人格
+- 🔧 修复 UMO 格式问题：正确区分群聊（GroupMessage）和私聊（FriendMessage）的会话标识
+- 🛡️ 降级兜底：任一增强插件不可用时自动降级，不影响问话主流程
+
+**配置项新增：**
+- `initiate_chat_enhancement.enable_context_aware` - 启用上下文感知
+- `initiate_chat_enhancement.context_history_count` - 上下文历史条数
+- `initiate_chat_enhancement.enable_time_perception` - 启用时间/节假日感知
+- `initiate_chat_enhancement.perception_timezone` - 降级时区
+- `initiate_chat_enhancement.persona_id` - 指定问话人格（可选）
 
 ## 许可证
 

@@ -78,5 +78,42 @@
         "default": 1
       }
     }
+  },
+  "initiate_chat_enhancement": {
+    "description": "问话增强设置",
+    "type": "object",
+    "hint": "接入 context_aware 上下文与 llmperception 时间/节假日分析能力",
+    "items": {
+      "enable_context_aware": {
+        "description": "启用 context_aware 上下文",
+        "type": "bool",
+        "hint": "启用后，问话会优先读取 context_aware 插件的格式化上下文",
+        "default": true
+      },
+      "context_history_count": {
+        "description": "context_aware 历史条数",
+        "type": "int",
+        "hint": "读取 context_aware 上下文的最近消息条数，范围建议 1-50",
+        "default": 10
+      },
+      "enable_time_perception": {
+        "description": "启用时间/节假日感知",
+        "type": "bool",
+        "hint": "启用后，问话会优先接入 llmperception 的时间、节假日、农历等信息",
+        "default": true
+      },
+      "perception_timezone": {
+        "description": "降级时区",
+        "type": "string",
+        "hint": "当 llmperception 不可用时用于时间感知的时区，如 Asia/Shanghai",
+        "default": "Asia/Shanghai"
+      },
+      "persona_id": {
+        "description": "问话人格ID（可选）",
+        "type": "string",
+        "hint": "填入系统中的人格ID后，问话会使用该人格；留空则沿用当前会话的人格与自定义规则（含高优先级规则）",
+        "default": ""
+      }
+    }
   }
 }
